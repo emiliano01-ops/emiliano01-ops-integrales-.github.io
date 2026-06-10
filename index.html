@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrales por Partes</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#1e293b;
+    padding:25px;
+    border-radius:15px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+.paso{
+    background:white;
+    color:black;
+    margin-top:15px;
+    padding:15px;
+    border-radius:10px;
+}
+
+.resultado{
+    margin-top:20px;
+    background:#22c55e;
+    padding:20px;
+    border-radius:10px;
+    font-size:22px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📘 Integrales por Partes</h1>
+
+<input id="funcion"
+placeholder="Ejemplo: x*e^x, x*sin(x), x*cos(x)"
+value="x*e^x">
+
+<button onclick="resolver()">Resolver</button>
+
+<div id="pasos"></div>
+<div id="resultado"></div>
+
+</div>
+
+<script>
+
+function resolver(){
+
+let f = document.getElementById("funcion").value.replace(/\s/g,"");
+
+let pasos = `
+<div class="paso">
+<b>REGLA DE INTEGRACIÓN POR PARTES</b><br><br>
+
+∫ u dv = u·v − ∫ v du
+</div>
+`;
+
+let resultado = "";
+
+try{
+
+let tipo = "";
+
+if(f.includes("e^x")) tipo="exp";
+else if(f.includes("sin")) tipo="sin";
+else if(f.includes("cos")) tipo="cos";
+else{
+document.getElementById("resultado").innerHTML =
+"<div class='paso'>Solo se admite x*e^x, x*sin(x), x*cos(x)</div>";
+return;
+}
+
+// DEFINIR u y dv
+let u = "x";
+let du = "1";
+
+let dv = "";
+let v = "";
+
+if(tipo==="exp"){
+dv="e^x";
+v="e^x";
+}
+
+if(tipo==="sin"){
+dv="sin(x)";
+v="-cos(x)";
+}
+
+if(tipo==="cos"){
+dv="cos(x)";
+v="sin(x)";
+}
+
+pasos += `
+<div class="paso">
+<b>Paso 1: Elegimos u y dv</b><br><br>
+
+u = x<br>
+dv = ${dv}
+</div>
+`;
+
+pasos += `
+<div class="paso">
+<b>Paso 2: Derivar e integrar</b><br><br>
+
+du = 1 dx<br>
+v = ${v}
+</div>
+`;
+
+pasos += `
+<div class="paso">
+<b>Paso 3: Aplicar fórmula</b><br><br>
+
+∫ u dv = u·v − ∫ v du
+</div>
+`;
+
+let resultadoFinal = "";
+
+if(tipo==="exp"){
+resultadoFinal = `x·e^x - ∫ e^x dx`;
+}
+
+if(tipo==="sin"){
+resultadoFinal = `-x·cos(x) + ∫ cos(x) dx`;
+}
+
+if(tipo==="cos"){
+resultadoFinal = `x·sin(x) - ∫ sin(x) dx`;
+}
+
+pasos += `
+<div class="paso">
+<b>Paso 4: Sustituir</b><br><br>
+
+∫ ${f} dx = ${resultadoFinal}
+</div>
+`;
+
+let simplificado = "";
+
+if(tipo==="exp"){
+simplificado = `x·e^x - e^x`;
+}
+
+if(tipo==="sin"){
+simplificado = `-x·cos(x) + sin(x)`;
+}
+
+if(tipo==="cos"){
+simplificado = `x·sin(x) + cos(x)`;
+}
+
+pasos += `
+<div class="paso">
+<b>Paso 5: Resultado final</b><br><br>
+
+∫ ${f} dx = ${simplificado} + C
+</div>
+`;
+
+document.getElementById("pasos").innerHTML = pasos;
+
+document.getElementById("resultado").innerHTML =
+`
+<div class="resultado">
+Resultado: ${simplificado} + C
+</div>
+`;
+
+}catch(e){
+
+document.getElementById("resultado").innerHTML =
+"<div class='paso'>Error en la expresión</div>";
+
+}
+
+}
+
+resolver();
+
+</script>
+
+</body>
+</html>
